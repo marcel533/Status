@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>marcel533 // status</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
+
+:root{
+  --bg:#0a0908;
+  --panel:#141210;
+  --panel-line:#2a2520;
+  --amber:#ffb300;
+  --amber-dim:#8a6a2a;
+  --amber-faint:#4a3a1a;
+  --ok:#3ddc84;
+  --down:#ff5c5c;
+  --pending:#6b6560;
+  --warn:#ff5c5c;
+}
+
+*{box-sizing:border-box; margin:0; padding:0;}
+
+body{
+  background:var(--bg);
+  color:var(--amber);
+  font-family:'IBM Plex Mono', monospace;
+  min-height:100vh;
+  padding:32px 16px 64px;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,179,0,0.025) 0px, rgba(255,179,0,0.025) 1px, transparent 1px, transparent 3px);
+}
+
+.wrap{
+  max-width:760px;
+  margin:0 auto;
+}
+
+.boot{
+  font-size:12px;
+  line-height:1.7;
+  color:var(--amber-dim);
+  margin-bottom:28px;
+  white-space:pre-wrap;
+}
+.boot .hi{color:var(--amber);}
+
+header{
+  border:1px solid var(--panel-line);
+  background:var(--panel);
+  padding:18px 20px;
+  margin-bottom:22px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  flex-wrap:wrap;
+  gap:12px;
+}
+header .title{
+  font-size:20px;
+  font-weight:700;
+  letter-spacing:0.5px;
+}
+header .title .cursor{
+  display:inline-block;
+  width:9px; height:16px;
+  background:var(--amber);
+  margin-left:4px;
+  vertical-align:-2px;
+  animation:blink 1.1s steps(1) infinite;
+}
+@keyframes blink{50%{opacity:0;}}
+header .sub{
+  font-size:11px;
+  color:var(--amber-dim);
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+.headright{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+.summary{
+  font-size:12px;
+  text-align:right;
+  color:var(--amber-dim);
+  letter-spacing:0.5px;
+}
+.summary .n{color:var(--amber); font-weight:700;}
+
+.langtoggle{
+  display:flex;
+  border:1px solid var(--amber-faint);
+  flex-shrink:0;
+}
+.langtoggle button{
+  background:transparent;
+  border:none;
+  color:var(--amber-dim);
+  font-family:inherit;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:1px;
+  padding:7px 13px;
+  cursor:pointer;
+  transition:all 0.15s ease;
+}
+.langtoggle button.active{background:var(--amber); color:var(--bg);}
+.langtoggle button:not(.active):hover{color:var(--amber);}
+
+.list{
+  border:1px solid var(--panel-line);
+  background:var(--panel);
+}
+
+.row{
+  display:grid;
+  grid-template-columns:14px 1fr auto auto;
+  align-items:center;
+  gap:16px;
+  padding:16px 20px;
+  border-bottom:1px solid var(--panel-line);
+  transition:background 0.15s ease;
+}
+.row:last-child{border-bottom:none;}
+.row:hover{background:rgba(255,179,0,0.04);}
+
+.dot{
+  width:9px; height:9px;
+  border-radius:50%;
+  background:var(--pending);
+  box-shadow:0 0 0 3px rgba(107,101,96,0.15);
+  flex-shrink:0;
+}
+.dot.ok{background:var(--ok); box-shadow:0 0 0 3px rgba(61,220,132,0.18);}
+.dot.down{background:var(--down); box-shadow:0 0 0 3px rgba(255,92,92,0.18);}
+.dot.pending{animation:pulse 1s ease-in-out infinite;}
+@keyframes pulse{50%{opacity:0.3;}}
+
+.meta a{
+  color:var(--amber);
+  text-decoration:none;
+  font-size:14px;
+  font-weight:600;
+  letter-spacing:0.2px;
+}
+.meta a:hover{text-decoration:underline;}
+.meta .url{
+  display:block;
+  font-size:11px;
+  color:var(--amber-dim);
+  margin-top:3px;
+  word-break:break-all;
+}
+
+.latency{
+  font-size:12px;
+  color:var(--amber-dim);
+  text-align:right;
+  min-width:64px;
+}
+
+.status-label{
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  text-align:right;
+  min-width:70px;
+}
+.status-label.ok{color:var(--ok);}
+.status-label.down{color:var(--down);}
+.status-label.pending{color:var(--pending);}
+
+footer.statusfoot{
+  margin-top:20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:10px;
+  font-size:11px;
+  color:var(--amber-faint);
+  letter-spacing:0.5px;
+}
+.recheck{
+  background:transparent;
+  border:1px solid var(--amber-faint);
+  color:var(--amber-dim);
+  font-family:inherit;
+  font-size:11px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  padding:8px 14px;
+  cursor:pointer;
+  transition:all 0.15s ease;
+}
+.recheck:hover{border-color:var(--amber); color:var(--amber);}
+.recheck:disabled{opacity:0.4; cursor:default;}
+
+.note{
+  font-size:11px;
+  color:var(--amber-faint);
+  line-height:1.6;
+  margin-top:16px;
+  border-left:2px solid var(--amber-faint);
+  padding-left:12px;
+}
+
+/* legal sections */
+nav.toc{
+  display:flex;
+  border:1px solid var(--panel-line);
+  background:var(--panel);
+  margin:30px 0 22px;
+  overflow-x:auto;
+}
+nav.toc a{
+  flex:1;
+  text-align:center;
+  padding:12px 10px;
+  color:var(--amber-dim);
+  text-decoration:none;
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:0.5px;
+  border-right:1px solid var(--panel-line);
+  white-space:nowrap;
+}
+nav.toc a:last-child{border-right:none;}
+nav.toc a:hover{color:var(--amber); background:rgba(255,179,0,0.04);}
+
+.legal-section{
+  border:1px solid var(--panel-line);
+  background:var(--panel);
+  padding:24px 26px;
+  margin-bottom:20px;
+}
+.legal-section h2{
+  font-size:16px;
+  letter-spacing:0.5px;
+  margin-bottom:14px;
+  padding-bottom:10px;
+  border-bottom:1px solid var(--panel-line);
+}
+.legal-section h2 .num{color:var(--amber-dim); margin-right:8px;}
+.legal-section h3{font-size:13px; color:var(--amber); margin:16px 0 6px;}
+.legal-section p, .legal-section li{font-size:13px; line-height:1.75; color:#e0c98a;}
+.legal-section p{margin-bottom:10px;}
+.legal-section ul{padding-left:20px; margin-bottom:10px;}
+.legal-section a.inline{color:var(--amber); text-decoration:underline;}
+
+.kv{
+  display:grid;
+  grid-template-columns:120px 1fr;
+  gap:6px 14px;
+  font-size:13px;
+  margin-top:6px;
+}
+.kv dt{color:var(--amber-dim);}
+.kv dd{color:#e0c98a;}
+
+.legalnotice{
+  border-left:2px solid var(--warn);
+  padding:10px 14px;
+  margin:14px 0;
+  font-size:12px;
+  color:#ffb3b3;
+  background:rgba(255,92,92,0.06);
+  line-height:1.6;
+}
+
+.legalfoot{
+  margin-top:28px;
+  font-size:11px;
+  color:var(--amber-faint);
+  text-align:center;
+  letter-spacing:0.5px;
+}
+
+[data-lang="en"]{display:none;}
+body.lang-en [data-lang="de"]{display:none;}
+body.lang-en [data-lang="en"]{display:block;}
+body.lang-en .kv[data-lang="en"]{display:grid;}
+body.lang-en nav.toc a[data-lang="en"]{display:block;}
+
+@media (max-width:520px){
+  .row{grid-template-columns:12px 1fr; row-gap:8px;}
+  .latency, .status-label{grid-column:2; text-align:left; min-width:0;}
+  .status-label{margin-top:-4px;}
+}
+</style>
+</head>
+<body class="lang-de">
+<div class="wrap">
+
+  <div class="boot" id="boot"></div>
+
+  <header>
+    <div>
+      <div class="title">marcel533<span class="cursor"></span></div>
+      <div class="sub" id="sub">github pages · status monitor</div>
+    </div>
+    <div class="headright">
+      <div class="summary" id="summary">prüfe systeme …</div>
+      <div class="langtoggle" id="langtoggle">
+        <button data-set="de" class="active">DE</button>
+        <button data-set="en">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="list" id="list"></div>
+
+  <footer class="statusfoot">
+    <span id="lastcheck">letzte prüfung: —</span>
+    <button class="recheck" id="recheckBtn">↻ erneut prüfen</button>
+  </footer>
+
+  <div class="note" data-lang="de">
+    Hinweis: Checks laufen client-seitig im No-CORS-Modus. Ein Treffer bedeutet, dass der Host erreichbar geantwortet hat — HTTP-Statuscodes einzelner Seiten (z. B. 404 innerhalb des Repos) können damit nicht unterschieden werden.
+  </div>
+  <div class="note" data-lang="en">
+    Note: checks run client-side in no-cors mode. A hit only means the host responded and was reachable — individual HTTP status codes (e.g. a 404 inside the repo) cannot be distinguished this way.
+  </div>
+
+  <!-- LEGAL -->
+  <nav class="toc">
+    <a href="#impressum" data-lang="de">Impressum</a>
+    <a href="#impressum" data-lang="en">Legal Notice</a>
+    <a href="#agb" data-lang="de">Nutzungsbedingungen</a>
+    <a href="#agb" data-lang="en">Terms of Service</a>
+  </nav>
+
+  <section class="legal-section" id="impressum">
+    <h2 data-lang="de"><span class="num">01</span>Impressum</h2>
+    <h2 data-lang="en"><span class="num">01</span>Legal Notice</h2>
+
+    <p data-lang="de">Angaben gemäß § 5 Telemediengesetz (TMG) bzw. § 18 Abs. 2 Medienstaatsvertrag (MStV):</p>
+    <p data-lang="en">Information according to German law (§ 5 TMG / § 18 para. 2 MStV):</p>
+
+    <dl class="kv" data-lang="de" style="display:grid;">
+      <dt>Name</dt><dd>marcel</dd>
+      <dt>E-Mail</dt><dd><a class="inline" href="mailto:marcel.worgotter@proton.me">marcel.worgotter@proton.me</a></dd>
+      <dt>Discord</dt><dd><a class="inline" href="https://discord.gg/5RqSyuZbDq" target="_blank" rel="noopener">discord.gg/5RqSyuZbDq</a></dd>
+    </dl>
+    <dl class="kv" data-lang="en">
+      <dt>Name</dt><dd>marcel</dd>
+      <dt>E-mail</dt><dd><a class="inline" href="mailto:marcel.worgotter@proton.me">marcel.worgotter@proton.me</a></dd>
+      <dt>Discord</dt><dd><a class="inline" href="https://discord.gg/5RqSyuZbDq" target="_blank" rel="noopener">discord.gg/5RqSyuZbDq</a></dd>
+    </dl>
+
+    <h3 data-lang="de">Haftung für Inhalte</h3>
+    <h3 data-lang="en">Liability for content</h3>
+    <p data-lang="de">Als Diensteanbieter bin ich gemäß § 7 Abs. 1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG bin ich als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen.</p>
+    <p data-lang="en">As a service provider, I am responsible for my own content on these pages in accordance with general laws. However, I am not obligated to monitor transmitted or stored third-party information.</p>
+
+    <h3 data-lang="de">Haftung für Links</h3>
+    <h3 data-lang="en">Liability for links</h3>
+    <p data-lang="de">Diese Seite verlinkt auf externe Projekte und Inhalte Dritter, auf deren Inhalte ich keinen Einfluss habe. Für diese fremden Inhalte übernehme ich keine Gewähr. Bei Bekanntwerden von Rechtsverletzungen werde ich derartige Links umgehend entfernen.</p>
+    <p data-lang="en">This site links to external third-party projects and content over which I have no control. I therefore cannot accept liability for this external content. Should I become aware of any legal violations, I will remove such links immediately.</p>
+  </section>
+
+  <section class="legal-section" id="agb">
+    <h2 data-lang="de"><span class="num">02</span>Nutzungsbedingungen</h2>
+    <h2 data-lang="en"><span class="num">02</span>Terms of Service</h2>
+
+    <h3 data-lang="de">1. Geltungsbereich</h3>
+    <h3 data-lang="en">1. Scope</h3>
+    <p data-lang="de">Diese Nutzungsbedingungen gelten für die Nutzung dieser Website ("Status-Monitor") sowie der darüber überwachten Projekte von marcel ("Betreiber", "ich"). Mit dem Aufruf und der Nutzung der Website erklärst du dich mit diesen Bedingungen einverstanden.</p>
+    <p data-lang="en">These Terms of Service apply to the use of this website ("Status Monitor") and the projects monitored through it, provided by marcel ("Operator", "I"). By accessing or using this website, you agree to these terms.</p>
+
+    <h3 data-lang="de">2. Angebot</h3>
+    <h3 data-lang="en">2. Services</h3>
+    <p data-lang="de">Die Website wird als privates, nicht-kommerzielles Hobbyprojekt bereitgestellt. Die angezeigten Status-Informationen basieren auf automatisierten, client-seitigen Erreichbarkeits-Checks und erheben keinen Anspruch auf Vollständigkeit oder Echtzeit-Genauigkeit. Es besteht kein Anspruch auf Verfügbarkeit oder Fehlerfreiheit der Website oder der überwachten Projekte.</p>
+    <p data-lang="en">This website is provided as a private, non-commercial hobby project. The status information shown is based on automated, client-side reachability checks and makes no claim to completeness or real-time accuracy. There is no entitlement to availability or error-free operation of the website or the monitored projects.</p>
+
+    <h3 data-lang="de">3. Nutzerpflichten</h3>
+    <h3 data-lang="en">3. User obligations</h3>
+    <ul data-lang="de">
+      <li>Die Website und verlinkte Dienste (z. B. der Discord-Server) dürfen nicht für rechtswidrige Zwecke genutzt werden.</li>
+      <li>Es dürfen keine Handlungen vorgenommen werden, die den Betrieb der Website oder verbundener Dienste stören oder gefährden (z. B. Angriffe, automatisierte Massenzugriffe, Missbrauch von Sicherheitslücken).</li>
+      <li>Im Discord-Server gilt zusätzlich die dortige Community-/Verhaltensordnung.</li>
+    </ul>
+    <ul data-lang="en">
+      <li>The website and linked services (e.g. the Discord server) may not be used for unlawful purposes.</li>
+      <li>No actions may be taken that disrupt or endanger the operation of the website or connected services (e.g. attacks, automated mass access, exploitation of security vulnerabilities).</li>
+      <li>Additional community/conduct rules apply within the Discord server.</li>
+    </ul>
+
+    <h3 data-lang="de">4. Haftungsausschluss</h3>
+    <h3 data-lang="en">4. Disclaimer of liability</h3>
+    <p data-lang="de">Die Inhalte dieser Website wurden mit größtmöglicher Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte — insbesondere der angezeigten Status-Werte — kann jedoch keine Gewähr übernommen werden. Die Nutzung erfolgt auf eigene Gefahr.</p>
+    <p data-lang="en">The content of this website has been created with the greatest possible care. However, no guarantee is given for the accuracy, completeness, or timeliness of the content — particularly the displayed status values. Use is at your own risk.</p>
+
+    <h3 data-lang="de">5. Urheberrecht</h3>
+    <h3 data-lang="en">5. Copyright</h3>
+    <p data-lang="de">Die durch den Betreiber erstellten Inhalte und Werke auf dieser Seite unterliegen dem deutschen Urheberrecht. Beiträge Dritter (z. B. Open-Source-Bibliotheken) sind als solche gekennzeichnet und unterliegen ihren jeweiligen Lizenzen.</p>
+    <p data-lang="en">Content and works created by the operator on this page are subject to German copyright law. Third-party contributions (e.g. open-source libraries) are marked as such and are subject to their respective licenses.</p>
+
+    <h3 data-lang="de">6. Änderungen</h3>
+    <h3 data-lang="en">6. Changes</h3>
+    <p data-lang="de">Diese Nutzungsbedingungen können jederzeit ohne Vorankündigung angepasst werden. Es gilt die zum Zeitpunkt der Nutzung veröffentlichte Fassung.</p>
+    <p data-lang="en">These Terms of Service may be updated at any time without prior notice. The version published at the time of use applies.</p>
+
+    <h3 data-lang="de">7. Kontakt</h3>
+    <h3 data-lang="en">7. Contact</h3>
+    <p data-lang="de">Fragen zu diesen Nutzungsbedingungen richtest du bitte per E-Mail an <a class="inline" href="mailto:marcel.worgotter@proton.me">marcel.worgotter@proton.me</a> oder über den <a class="inline" href="https://discord.gg/5RqSyuZbDq" target="_blank" rel="noopener">Discord-Server</a>.</p>
+    <p data-lang="en">Questions about these Terms of Service can be sent by e-mail to <a class="inline" href="mailto:marcel.worgotter@proton.me">marcel.worgotter@proton.me</a> or via the <a class="inline" href="https://discord.gg/5RqSyuZbDq" target="_blank" rel="noopener">Discord server</a>.</p>
+  </section>
+
+  <div class="legalfoot" data-lang="de">Stand: <span id="date-de"></span> · Kein Ersatz für Rechtsberatung.</div>
+  <div class="legalfoot" data-lang="en">Last updated: <span id="date-en"></span> · Not a substitute for legal advice.</div>
+
+</div>
+
+<script>
+const sites = [
+  { name: "web-shop", url: "https://marcel533.github.io/web-shop/" },
+  { name: "Protofolio", url: "https://marcel533.github.io/Protofolio/" },
+  { name: "ZIP-tar.gz-Archiver", url: "https://marcel533.github.io/ZIP-tar.gz-Archiver/" },
+  { name: "Open-Source-Empfehlungen", url: "https://marcel533.github.io/-Open-Source-Empfehlungen/" },
+  { name: "online-code-editor", url: "https://marcel533.github.io/online-code-editor/" },
+  { name: "Name-file-cleaner", url: "https://marcel533.github.io/Name-file-cleaner/" }
+];
+
+const i18n = {
+  de: {
+    sub: "github pages · status monitor",
+    checking: "prüfe systeme …",
+    checkingRow: "prüft …",
+    online: "online",
+    offline: "offline",
+    sysOnline: "systeme online",
+    lastcheck: "letzte prüfung",
+    uhr: " Uhr",
+    recheck: "↻ erneut prüfen",
+    boot: [
+      '<span class="hi">[boot]</span> init status monitor v1.0',
+      `[boot] targets loaded: ${sites.length}`,
+      '[boot] mode: no-cors reachability probe',
+      '[boot] starting scan…'
+    ]
+  },
+  en: {
+    sub: "github pages · status monitor",
+    checking: "checking systems …",
+    checkingRow: "checking …",
+    online: "online",
+    offline: "offline",
+    sysOnline: "systems online",
+    lastcheck: "last checked",
+    uhr: "",
+    recheck: "↻ recheck",
+    boot: [
+      '<span class="hi">[boot]</span> init status monitor v1.0',
+      `[boot] targets loaded: ${sites.length}`,
+      '[boot] mode: no-cors reachability probe',
+      '[boot] starting scan…'
+    ]
+  }
+};
+
+let currentLang = 'de';
+let lastResults = null;
+
+const listEl = document.getElementById('list');
+const summaryEl = document.getElementById('summary');
+const bootEl = document.getElementById('boot');
+const lastCheckEl = document.getElementById('lastcheck');
+const recheckBtn = document.getElementById('recheckBtn');
+const subEl = document.getElementById('sub');
+const langtoggle = document.getElementById('langtoggle');
+
+function render(){
+  listEl.innerHTML = sites.map((s, i) => `
+    <div class="row" id="row-${i}">
+      <div class="dot pending" id="dot-${i}"></div>
+      <div class="meta">
+        <a href="${s.url}" target="_blank" rel="noopener">${s.name}</a>
+        <span class="url">${s.url}</span>
+      </div>
+      <div class="latency" id="lat-${i}">—</div>
+      <div class="status-label pending" id="lbl-${i}">${i18n[currentLang].checkingRow}</div>
+    </div>
+  `).join('');
+}
+render();
+
+function bootLine(text, delay){
+  return new Promise(res => setTimeout(() => {
+    bootEl.innerHTML += (bootEl.innerHTML ? "\n" : "") + text;
+    res();
+  }, delay));
+}
+
+async function bootSequence(){
+  const lines = i18n[currentLang].boot;
+  for(let i=0;i<lines.length;i++){
+    await bootLine(lines[i], i===0?60:90);
+  }
+}
+
+function applyStaticLangUI(){
+  subEl.textContent = i18n[currentLang].sub;
+  recheckBtn.textContent = i18n[currentLang].recheck;
+}
+
+function renderResultsForLang(){
+  if(!lastResults) return;
+  const t = i18n[currentLang];
+  lastResults.results.forEach((ok, i) => {
+    const dot = document.getElementById(`dot-${i}`);
+    const lbl = document.getElementById(`lbl-${i}`);
+    const lat = document.getElementById(`lat-${i}`);
+    dot.className = 'dot ' + (ok ? 'ok' : 'down');
+    lbl.className = 'status-label ' + (ok ? 'ok' : 'down');
+    lbl.textContent = ok ? t.online : t.offline;
+    lat.textContent = ok && lastResults.latencies[i] != null ? lastResults.latencies[i] + ' ms' : '—';
+  });
+  const up = lastResults.results.filter(Boolean).length;
+  summaryEl.innerHTML = `<span class="n">${up}/${sites.length}</span> ${t.sysOnline}`;
+  const locale = currentLang === 'de' ? 'de-DE' : 'en-GB';
+  lastCheckEl.textContent = `${t.lastcheck}: ${lastResults.time.toLocaleTimeString(locale)}${t.uhr}`;
+}
+
+async function checkSite(i){
+  const s = sites[i];
+  const start = performance.now();
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
+  try {
+    await fetch(s.url, { mode: 'no-cors', cache: 'no-store', signal: controller.signal });
+    clearTimeout(timeout);
+    return { ok: true, ms: Math.round(performance.now() - start) };
+  } catch (err) {
+    clearTimeout(timeout);
+    return { ok: false, ms: null };
+  }
+}
+
+async function runChecks(){
+  recheckBtn.disabled = true;
+  summaryEl.textContent = i18n[currentLang].checking;
+  sites.forEach((_, i) => {
+    document.getElementById(`dot-${i}`).className = 'dot pending';
+    document.getElementById(`lbl-${i}`).className = 'status-label pending';
+    document.getElementById(`lbl-${i}`).textContent = i18n[currentLang].checkingRow;
+    document.getElementById(`lat-${i}`).textContent = '—';
+  });
+
+  const raw = await Promise.all(sites.map((_, i) => checkSite(i)));
+  lastResults = {
+    results: raw.map(r => r.ok),
+    latencies: raw.map(r => r.ms),
+    time: new Date()
+  };
+  renderResultsForLang();
+  recheckBtn.disabled = false;
+}
+
+recheckBtn.addEventListener('click', runChecks);
+
+langtoggle.addEventListener('click', (e) => {
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  currentLang = btn.dataset.set;
+  document.body.classList.toggle('lang-en', currentLang === 'en');
+  langtoggle.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.set === currentLang));
+  applyStaticLangUI();
+  renderResultsForLang();
+});
+
+const now = new Date();
+const fmt = { day:'2-digit', month:'2-digit', year:'numeric' };
+document.getElementById('date-de').textContent = now.toLocaleDateString('de-DE', fmt);
+document.getElementById('date-en').textContent = now.toLocaleDateString('en-GB', fmt);
+
+(async () => {
+  applyStaticLangUI();
+  await bootSequence();
+  await runChecks();
+})();
+</script>
+</body>
+</html>
