@@ -28,3 +28,5 @@ Reine HTML/CSS/JS-Einzeldatei, kein Build-Prozess nötig. Die Erreichbarkeits-Ch
 ## Hinweis zur Erstellung
 
 Diese Seite (Design, Code, Impressum- und AGB-Texte) wurde mit KI-Unterstützung (Claude von Anthropic) erstellt.
+
+URL: https://marcel533.github.io/Status/
