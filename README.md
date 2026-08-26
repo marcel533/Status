@@ -25,11 +25,6 @@ Reine HTML/CSS/JS-Einzeldatei, kein Build-Prozess nötig. Die Erreichbarkeits-Ch
 
 **Hinweis:** Läuft die Datei innerhalb einer Sandbox mit eingeschränkter Content-Security-Policy (z. B. manche Chat- oder Vorschau-Umgebungen), können die Checks blockiert werden und fälschlich „offline" anzeigen. Lokal im Browser geöffnet oder per GitHub Pages gehostet funktioniert es normal.
 
-## Nutzung
-
-1. `status.html` herunterladen
-2. Direkt im Browser öffnen — oder als `index.html` in ein GitHub-Pages-Repo legen
-
 ## Hinweis zur Erstellung
 
 Diese Seite (Design, Code, Impressum- und AGB-Texte) wurde mit KI-Unterstützung (Claude von Anthropic) erstellt.
