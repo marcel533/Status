@@ -411,9 +411,8 @@ body.lang-en nav.toc a[data-lang="en"]{display:block;}
     <p data-lang="en">Questions about these Terms of Service can be sent by e-mail to <a class="inline" href="mailto:marcel.worgotter@proton.me">marcel.worgotter@proton.me</a> or via the <a class="inline" href="https://discord.gg/5RqSyuZbDq" target="_blank" rel="noopener">Discord server</a>.</p>
   </section>
 
-  <div class="legalfoot" data-lang="de">Stand: <span id="date-de">
-  <div class="legalfoot" data-lang="en">Last updated: <span id="date-en">
-</div>
+  <div class="legalfoot" data-lang="de">Stand: <span id="date-de"></span></div>
+  <div class="legalfoot" data-lang="en">Last updated: <span id="date-en"></span></div>
 
 <script>
 const sites = [
@@ -577,11 +576,17 @@ const fmt = { day:'2-digit', month:'2-digit', year:'numeric' };
 document.getElementById('date-de').textContent = now.toLocaleDateString('de-DE', fmt);
 document.getElementById('date-en').textContent = now.toLocaleDateString('en-GB', fmt);
 
-(async () => {
+async function init(){
   applyStaticLangUI();
   await bootSequence();
   await runChecks();
-})();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
 </script>
 </body>
 </html>
