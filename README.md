@@ -1,9 +1,11 @@
-# marcel533-status
+
+#status-board
 ---
-🇩🇪Deutsch Dieses Repository hostet die Quellcode-Dateien für meine persönliche Status-Seite. Sie dient als einfache Übersicht über den aktuellen Zustand meiner Projekte oder Dienste.
+DE
+dies website zeigt ihnen an welche dienste von mir online, mit einer guten overfläche
 
-🇺🇸 EnglishThis repository hosts the source code for my personal status page. It serves as a simple overview of the current state of my projects or services.
+---
+EN
+this website shows you what services of mine online, with a good oversurface
 
-URL: https://marcel533.github.io/Status/
-
-note: the css and read.md is fully created with ai
+website:
