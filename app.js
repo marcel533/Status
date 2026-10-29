@@ -3,7 +3,7 @@
 
 const sites = [
   { name: "Protofolio", url: "https://marcel533.github.io/Protofolio/" },
-  { name: "ZIP-tar.gz-Archiver", url: "https://marcel533.github.io/ZIP-tar.gz-Archiver/" },
+  { name: "ZipTar-Crafter", url: "https://marcel533.github.io/ZipTar-Crafter/" },
   { name: "open-source-picks", url: "https://marcel533.github.io/open-source-picks/" },
   { name: "online-code-editor", url: "https://marcel533.github.io/online-code-editor/" },
   { name: "Name-file-cleaner", url: "https://marcel533.github.io/Name-file-cleaner/" }
